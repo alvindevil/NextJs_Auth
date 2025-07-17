@@ -19,7 +19,7 @@ export default function LoginPage() {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-700 text-white">
-            <h1 className="text-2xl font-bold w-fit px-4 py-2 border-2 border-gray-500 rounded-xl">
+            <h1 className="text-2xl font-bold w-fit px-4 py-2 rounded-xl">
                 Login
             </h1>
             <br />

@@ -1,9 +1,17 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export async function connect()
 {
     try {
-        mongoose.connect(process.env.MONGO_URL!);
+        const mongoUri =process.env.MONGO_URI ;
+        if(!mongoUri){
+            throw new Error("MongoDB URI is not defined");
+        }
+        await mongoose.connect(mongoUri);
+
         const connection = mongoose.connection;
 
         connection.on('connected', ()=>{

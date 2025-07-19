@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 import { log } from "console";
 
 
-
 export default function SignupPage() {
 
     const router = useRouter();
@@ -120,7 +119,16 @@ export default function SignupPage() {
                         ${buttonDisabled ? "cursor-not-allowed " : "cursor-pointer"}`}
                     disabled={buttonDisabled}
                 >
-                    {buttonDisabled ? "No Signup " : "Signup"}
+                    {loading ? (
+                        <div className="flex space-x-1">
+                            <h3>Loading</h3>
+                    <span className="animate-bounce-dot delay-0">.</span>
+                    <span className="animate-bounce-dot delay-200">.</span>
+                    <span className="animate-bounce-dot delay-400">.</span>
+                    </div>
+                    ) 
+                    : 
+                    (buttonDisabled ? "No Signup " : "Signup")}
                 </button>
 
                 <Link href="/login" className="text-blue-400 hover:underline mt-2 text-center"> 

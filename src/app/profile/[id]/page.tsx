@@ -2,8 +2,8 @@ import axios from "axios";
 
 export default async function UserProfile({ params }: { params: { id: string } }) {
 
-    const userName = params.id;
-    console.log("User Name from params.id: ", userName);
+    const userName =  params.id;
+    // console.log("User Name from params.id: ", userName);
     // Here you can fetch user data based on userId if needed
 
     return (

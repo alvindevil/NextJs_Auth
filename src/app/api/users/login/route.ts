@@ -34,7 +34,7 @@ export async function POST(request : NextRequest) {
         const tokenData = {
             id: user._id,   //as the id starting with _ in mongoAtlas
             email: user.email,
-            name: user.name
+            username: user.username,
         };
     
         //create a token 

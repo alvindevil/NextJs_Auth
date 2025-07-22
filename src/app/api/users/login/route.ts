@@ -19,13 +19,14 @@ export async function POST(request : NextRequest) {
         //check if user exists
         const user = await User.findOne({email});
         if(!user) {
-            return NextResponse.json({error: "User not found"}, {status: 404});
+            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
         }
 
         //check if password is correct
         const isPasswordValid = await bcryptjs.compare(password, user.password);
         if(!isPasswordValid) {
-            return NextResponse.json({error: "Invalid password"}, {status: 401});
+            console.log("Invalid Password");
+            return NextResponse.json({ success: false, message: "Invalid password" }, { status: 401 });
         }
         //if error comes try changing brcypt import 
 
@@ -54,7 +55,7 @@ export async function POST(request : NextRequest) {
 
 
     } catch (error: any ) {
-        return NextResponse.json({error:error.mes2sage}, {status: 500});
+        return NextResponse.json({success : false ,message :error.message || "Error most probably in api/login-> route.ts file , hehe thnkx "}, {status: 500});
     }
     
 }

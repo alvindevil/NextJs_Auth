@@ -26,11 +26,13 @@ export default function LoginPage() {
             const userdata = response.data;
             console.log("Login response: ", response.data);
             console.log("Username ", response.data.username);
-            toast.success("Login successful");
+            toast.success(response.data.message || "Login successful");
             router.push(`/profile/${userdata.username}`); 
-        } catch (error:any) {
+        } catch (error: any) {
             console.error("Login error:", error);
-            toast.error(error.response?.data?.error || "Login failed");
+            const errorMessage = error.response.data.message || "Login failed";
+            toast.error(errorMessage);
+
         }
         finally {
             setLoading(false);

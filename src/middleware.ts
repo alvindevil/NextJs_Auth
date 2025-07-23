@@ -38,7 +38,6 @@ export function middleware(request: NextRequest) {
 //routes on which middleware will run on 
 export const config = {
     matcher: [
-        '/profile',
         '/login',
         '/signup',  
     ]

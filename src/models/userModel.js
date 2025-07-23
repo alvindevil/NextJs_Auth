@@ -15,6 +15,18 @@ const userSchema = new mongoose.Schema({
         type: String, 
         required: [true, "Please enter a password"],
     },
+    isVerfied: {
+        type: Boolean,
+        default: false,
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    forgotPasswordToken: String,
+    forgotPasswordTokenExpiry: Date,
+    verifyToken: String,
+    verifyTokenExpiry: Date,
     
 })
 

@@ -4,11 +4,9 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
-export default async function UserProfile({ params }: { params: { id: any } }) {
+export default async function UserProfile({ params }: any) {
 
     const userName =  params.id;
-    // console.log("User Name from params.id: ", userName);
-    // Here you can fetch user data based on userId if needed
 
     const router = useRouter();
 

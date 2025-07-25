@@ -8,6 +8,7 @@ import axios from "axios";
 import { set } from "mongoose";
 import toast from "react-hot-toast";
 import { log } from "console";
+import Header from "@/components/layout/header";
 
 
 export default function SignupPage() {
@@ -64,77 +65,80 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-700 text-white">
-            <h1 className="text-2xl font-bold  w-fit px-4 py-2 rounded-xl"> Signup </h1>
-            <button
-                onClick={testBackend}
-                className="mb-4 px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 text-white"
-            >
-                Test Backend
-            </button>
-            <br/>
+        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-950 text-white flex flex-col">
+      {/* Header (same as Login page) */}
+      <div className="w-full">
+        <Header />
+      </div>
 
-            <div className="flex flex-col w-[400px] h-fit border-1 p-10 justify-self-auto backdrop-blur-2xl bg-gray-800 rounded-xl ">
-                <div className="m-4">
-                    <label className="block mb-2 " htmlFor="username"> Username : </label>
-                    <input
-                        className="border-2 text-white  p-2 rounded-xl w-full"
-                        id="username"
-                        type="text"
-                        value={user.username}
-                        onChange={(e) => setUser({ ...user, username: e.target.value })}
-                        placeholder="username"
-                    />
-                </div>
+      {/* Main Content */}
+      <div className="flex flex-1 items-center justify-center px-4">
+        <div className="w-full max-w-md backdrop-blur-xl bg-gray-800/70 p-8 rounded-2xl shadow-lg">
+          <h1 className="text-3xl font-bold text-center mb-6">Signup</h1>
 
-                <div className="m-4">
-                    <label className="block mb-2" htmlFor="username"> email : </label>
-                    <input
-                        className="border-2 text-white  p-2 rounded-xl w-full"
-                        id="email"
-                        type="email"
-                        value={user.email}
-                        onChange={(e) => setUser({ ...user, email: e.target.value })}
-                        placeholder="email"
-                    />
-                </div>
+          <div className="mb-4">
+            <label htmlFor="username" className="block mb-2 text-sm font-medium">
+              Username:
+            </label>
+            <input
+              id="username"
+              type="text"
+              value={user.username}
+              onChange={(e) => setUser({ ...user, username: e.target.value })}
+              placeholder="yourname"
+              className="w-full px-4 py-2 bg-gray-700 border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-                <div className="m-4">
-                    <label className="block mb-2" htmlFor="username"> password : </label>
-                    <input
-                        className="border-2 text-white  p-2 rounded-xl w-full"
-                        id="password"
-                        type="password"
-                        value={user.password}
-                        onChange={(e) => setUser({ ...user, password: e.target.value })}
-                        placeholder="password"
-                    />
-                </div>
-                
-                <button
-                    onClick={onSignUp}
-                    className={`p-2 m-4 w-full rounded-lg border-2 border-gray-200 bg-gray-300
-                        hover:bg-gray-400 focus:outline-none focus:border-white active:border-white
-                        transition-colors duration-200 text-gray-900 
-                        ${buttonDisabled ? "cursor-not-allowed " : "cursor-pointer"}`}
-                    disabled={buttonDisabled}
-                >
-                    {loading ? (
-                        <div className="flex space-x-1">
-                            <h3>Loading</h3>
-                    <span className="animate-bounce-dot delay-0">.</span>
-                    <span className="animate-bounce-dot delay-200">.</span>
-                    <span className="animate-bounce-dot delay-400">.</span>
-                    </div>
-                    ) 
-                    : 
-                    (buttonDisabled ? "No Signup " : "Signup")}
-                </button>
+          <div className="mb-4">
+            <label htmlFor="email" className="block mb-2 text-sm font-medium">
+              Email:
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              placeholder="email@example.com"
+              className="w-full px-4 py-2 bg-gray-700 border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-                <Link href="/login" className="text-blue-400 hover:underline mt-2 text-center"> 
-                Already account? -Login page 
-                </Link>
-            </div>
+          <div className="mb-6">
+            <label htmlFor="password" className="block mb-2 text-sm font-medium">
+              Password:
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              placeholder="••••••••"
+              className="w-full px-4 py-2 bg-gray-700 border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <button
+            onClick={onSignUp}
+            disabled={buttonDisabled}
+            className={`w-full py-2 px-4 font-semibold rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 
+              ${
+                buttonDisabled
+                  ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+          >
+            {loading ? 'Signing up...' : buttonDisabled ? 'Fill all fields' : 'Signup'}
+          </button>
+
+          <p className="mt-4 text-center text-sm">
+            Already have an account?{' '}
+            <Link href="/login" className="text-blue-400 hover:underline">
+              Login
+            </Link>
+          </p>
         </div>
-    )
+      </div>
+    </div>
+    );
 }

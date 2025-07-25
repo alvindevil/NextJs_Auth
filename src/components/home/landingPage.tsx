@@ -2,10 +2,12 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import Header from '../layout/header';
+import {Header} from '@/components/layout/Header';
 import Hero from '@/components/home/hero';
 import { Loader } from "@/components/ui/Loader";
-
+import Footer from '../layout/Footer';
+import About from './about';
+import Features from './feature';
 
 export default function LandingPage() {
     const router = useRouter();
@@ -13,10 +15,7 @@ export default function LandingPage() {
 
     function openLogin() {
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            router.push('/login');
-        }, 3000); // Simulate a delay for loading
+        router.push('/login');
     }
 
     function openSignup() {
@@ -27,15 +26,23 @@ export default function LandingPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-950 text-white">
-            <Header />
+            <Header
+                title="NotionBlog"
+                navigation={[
+                    { label: "Home", href: "/" },
+                    { label: "Features", href: "#features", scrollToId: "features" },
+                    { label: "About", href: "#about", scrollToId: "about" },
+                ]}
+            />
+
             {loading ? (
                 (<div className='flex justify-center py-20'> <Loader /> </div>)
             ) : (
                 <div>
                     <Hero onLogin={openLogin} onSignup={openSignup} />
-                    <footer className="mt-20 py-8 text-center text-gray-500 text-sm">
-                        © {new Date().getFullYear()} NotionBlog. All rights reserved.
-                    </footer>
+                    <div id='features'> <Features/> </div>
+                    <div id='about'> <About /> </div>
+                    <Footer />
                 </div>
             )}
         </div>

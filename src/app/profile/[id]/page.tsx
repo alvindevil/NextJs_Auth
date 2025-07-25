@@ -1,46 +1,58 @@
-"use client"
+"use client";
+
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import SidePanel from "@/components/layout/sidePanel";
+import Textarea from "@/components/ui/Textarea";
 
-export default async function UserProfile({ params }: any) {
-
-    const userName =  params.id;
-
+export default function UserProfile({ params }: any) {
+    const userName = params.id;
     const router = useRouter();
+    const [text, setText] = useState("");
 
-
-
-    const logout = async () =>{
-            try {
-                const response = await axios.get('/api/users/logout');
-                console.log("Logout response: ", response.data);
-                alert(response.data.message || "Logout successful");
-                toast.success(response.data.message || "Logout successful");
-                console.log("redirecting to login page");
-                router.push('/login');
-                console.log("Login page ");
-            } catch (error: any) {
-                console.error("Logout error:", error);
-                alert(error.response.data.message || "Logout failed");
-            }
+    const logout = async () => {
+        try {
+            const response = await axios.get("/api/users/logout");
+            toast.success(response.data.message || "Logout successful");
+            router.push("/login");
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || "Logout failed");
         }
-
+    };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <h1>Profile</h1> <br/>
-            <p className="text-4xl">
-                Welcome to your profile! 
-                <span className="text-blue-500">  {userName} </span>
-            </p>
-            <div>
-                <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200">
-                    Logout 
+        <div className="flex min-h-screen bg-gray-100">
+            {/* Side Panel */}
+            <div className="hidden md:block w-1/4">
+                <SidePanel />
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 p-6">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-gray-800">
+                        👋 Welcome, <span className="text-blue-500">{userName}</span>
+                    </h1>
+                    <p className="text-sm text-gray-600 mt-1">Start writing your thoughts below.</p>
+                </div>
+
+                {/* Writing Area */}
+                <Textarea
+                    placeholder="Start writing your thoughts..."
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    rows={8}
+                />
+
+                <button
+                    onClick={logout}
+                    className="mt-6 bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition duration-200"
+                >
+                    Logout
                 </button>
             </div>
-            
         </div>
     );
 }

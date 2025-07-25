@@ -38,7 +38,7 @@ export async function POST(request: NextRequest){
         const savedUser = await newUser.save();
         console.log("User Saved successfully:", savedUser);
 
-        //send verification email 
+        
         await sendEmail({
             email: savedUser.email,
             emailType: "VERIFY",

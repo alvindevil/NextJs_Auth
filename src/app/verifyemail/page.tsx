@@ -18,7 +18,6 @@ export default function VerifyEmailPage() {
         } catch (error:any) {
             setError(true);
             console.log(error.reponse.data);
-            
         }
 
     }
@@ -52,7 +51,6 @@ export default function VerifyEmailPage() {
             {error && (
                 <div>
                     <h2 className="text-2xl bg-red-500 text-black">Error</h2>
-                    
                 </div>
             )}
         </div>

@@ -2,13 +2,13 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import toast from "react-hot-toast";
 import SidePanel from "@/components/layout/sidePanel";
 import Textarea from "@/components/ui/Textarea";
 
-export default function UserProfile({ params }: any) {
-    const userName = params.id;
+export default function UserProfile({ params }: { params: Promise<{ id: string }> }) {
+    const { id: userName } = use(params); 
     const router = useRouter();
     const [text, setText] = useState("");
 
@@ -16,6 +16,7 @@ export default function UserProfile({ params }: any) {
         try {
             const response = await axios.get("/api/users/logout");
             toast.success(response.data.message || "Logout successful");
+            alert("Logout successful");
             router.push("/login");
         } catch (error: any) {
             toast.error(error?.response?.data?.message || "Logout failed");
@@ -24,12 +25,10 @@ export default function UserProfile({ params }: any) {
 
     return (
         <div className="flex min-h-screen bg-gray-100">
-            {/* Side Panel */}
             <div className="hidden md:block w-1/4">
                 <SidePanel />
             </div>
 
-            {/* Main Content */}
             <div className="flex-1 p-6">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold text-gray-800">

@@ -4,10 +4,11 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import {Header} from '@/components/layout/Header';
 import Hero from '@/components/home/hero';
-import { Loader } from "@/components/ui/Loader";
+import  Loader  from "@/components/ui/Loader";
 import Footer from '../layout/Footer';
 import About from './about';
 import Features from './feature';
+import { set } from 'mongoose';
 
 export default function LandingPage() {
     const router = useRouter();
@@ -15,18 +16,32 @@ export default function LandingPage() {
 
     function openLogin() {
         setLoading(true);
-        router.push('/login');
+        setTimeout(() => {
+            router.push('/login');
+        }, 2000);
     }
 
     function openSignup() {
         setLoading(true);
-        router.push('/signup');
+        setTimeout(() => {
+            router.push('/signup');
+        }, 2000);
     }
 
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-950 text-white">
-            <Header
+            
+
+            {loading ? (
+                (
+                    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-950">
+                        <Loader />
+                    </div>
+                )
+            ) : (
+                <div>
+                    <Header
                 title="NotionBlog"
                 navigation={[
                     { label: "Home", href: "/" },
@@ -34,11 +49,6 @@ export default function LandingPage() {
                     { label: "About", href: "#about", scrollToId: "about" },
                 ]}
             />
-
-            {loading ? (
-                (<div className='flex justify-center py-20'> <Loader /> </div>)
-            ) : (
-                <div>
                     <Hero onLogin={openLogin} onSignup={openSignup} />
                     <div id='features'> <Features/> </div>
                     <div id='about'> <About /> </div>

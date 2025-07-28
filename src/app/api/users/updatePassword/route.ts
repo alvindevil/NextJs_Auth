@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 export async function POST(request: NextRequest) {
     try {
         const reqBody = await request.json();
-        const { newpassword, token } = reqBody
+        const { newpassword, token } = reqBody;
         console.log("Token received:", token);
         const user = await User.findOne({forgotPasswordToken: token, forgotPasswordTokenExpiry: {$gt: Date.now()}});
         
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
         if (!user) {
             return NextResponse.json({error: "invalid Token"}, {status: 400});
         }
-
+        
         user.password = await bcrypt.hash(newpassword, 10);
         user.forgotPasswordToken = undefined;
         user.forgotPasswordTokenExpiry = undefined;

@@ -10,7 +10,9 @@ export async function connect()
         if(!mongoUri){
             throw new Error("MongoDB URI is not defined");
         }
-        await mongoose.connect(mongoUri);
+        await mongoose.connect(mongoUri, {
+            dbName: process.env.DB_NAME
+        });
 
         const connection = mongoose.connection;
 

@@ -17,18 +17,18 @@ export async function POST(request: NextRequest){
         const {username, email, password} = reqBody;
         console.log("Received data:", reqBody);
 
-        console.log("1 come here ");
+        
         //check if user already in db
         const user = await  User.findOne({email:email});
         if (user){
             return NextResponse.json({error: "User already exists"}, 
                 {status: 400});
             }
-            console.log("2 come here ");
+            
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
             
-        console.log("3 come here ");
+        
         const newUser = new User({
             username: username,
             email: email,

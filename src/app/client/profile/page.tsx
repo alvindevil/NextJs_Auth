@@ -15,7 +15,7 @@ export default function ProfilePage() {
             await axios.get('/api/users/logout')
             console.log("Logout successful");
             toast.success('Logout successful')
-            router.push('/login')
+            router.push('/client/login')
         } catch (error:any) {
             console.log(error.message);
             toast.error(error.message)
@@ -33,7 +33,7 @@ export default function ProfilePage() {
             <h1>Profile</h1>
             <hr />
             <p>Profile page</p>
-            <h2 className="p-1 rounded bg-green-500">{data === 'nothing' ? "Nothing" : <Link href={`/profile/${data}`}>{data}
+            <h2 className="p-1 rounded bg-green-500">{data === 'nothing' ? "Nothing" : <Link href={`/client/profile/${data}`}>{data}
             </Link>}</h2>
         <hr />
         <button

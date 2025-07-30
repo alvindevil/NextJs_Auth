@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
         type: String, 
         required: [true, "Please enter a password"],
     },
-    isVerfied: {
+    isVerified: {
         type: Boolean,
         default: false,
     },
@@ -31,7 +31,9 @@ const userSchema = new mongoose.Schema({
 })
 
 const User = mongoose.models.users || mongoose.model
-("users", userSchema);
+("users", userSchema, "users");
 
 
 export default User;
+
+

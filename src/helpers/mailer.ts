@@ -37,8 +37,8 @@ export const sendEmail = async({email, emailType, userId} :any) =>{
 
         // const route = emailType === "VERIFY" ? "verifyemail" : "resetpassword";
         let  route; 
-        if(emailType === "VERIFY") { route = "verifyemail"; }
-        else if(emailType === "RESET") { route = "resetPassword"; }
+        if(emailType === "VERIFY") { route = "client/verifyemail"; }
+        else if(emailType === "RESET") { route = "client/resetPassword"; }
 
         const mailOptions = {
             from: 'yadavs47334@gmail.com',

@@ -17,14 +17,14 @@ export default function LandingPage() {
     function openLogin() {
         setLoading(true);
         setTimeout(() => {
-            router.push('/login');
+            router.push('/client/login');
         }, 2000);
     }
 
     function openSignup() {
         setLoading(true);
         setTimeout(() => {
-            router.push('/signup');
+            router.push('/client/signup');
         }, 2000);
     }
 

@@ -31,7 +31,7 @@ export default function SignupPage() {
             console.log("Signing up:", user.username);
             const response = await axios.post("/api/users/signup", user);
             console.log("Signup Done and here is data which is send :", response);
-            router.push('/login');
+            router.push('/client/login');
         } 
         catch (error : any) {
             console.log("Signup failed", error.message);
@@ -133,7 +133,7 @@ export default function SignupPage() {
 
           <p className="mt-4 text-center text-sm">
             Already have an account?{' '}
-            <Link href="/login" className="text-blue-400 hover:underline">
+            <Link href="/client/login" className="text-blue-400 hover:underline">
               Login
             </Link>
           </p>

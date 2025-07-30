@@ -19,7 +19,7 @@ export default function ResetPasswordPage() {
                 if (response.data.message) {
                     alert(response.data.message);
                     setVerified(true);
-                    router.push("/login");
+                    router.push("/client/login");
                 }
             } catch (error:any) {
                 setError(true);

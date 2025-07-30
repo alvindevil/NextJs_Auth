@@ -26,7 +26,7 @@ export default function Forget() {
 
     audio.addEventListener("canplaythrough", () => {
       try {
-        audio.currentTime = 0.1; // Skip initial silence
+        audio.currentTime = 0.1; 
       } catch (err) {
         console.warn("Skipping failed:", err);
       }
@@ -35,16 +35,16 @@ export default function Forget() {
       });
     });
 
-    audio.load(); // Ensure preload starts
+    audio.load(); 
 
-    // Delay alert display slightly for better sync
+    
     setTimeout(() => {
       setAlertMessage(message);
       setAlertType(type);
       setShowAlert(true);
 
       setTimeout(() => setShowAlert(false), 3000);
-    }, 300); // Show after 300ms
+    }, 300); 
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -56,7 +56,7 @@ export default function Forget() {
 
       if (response.status === 200) {
         playSoundAndShowAlert("Password reset link sent to your email", "success");
-        router.push("/login");
+        router.push("/client/login");
       }
     } catch (error: any) {
       console.error("Error resetting password:", error);

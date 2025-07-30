@@ -28,7 +28,7 @@ export default function LoginPage() {
             console.log("Login response: ", response.data);
             console.log("Username ", response.data.username);
             toast.success(response.data.message || "Login successful");
-            router.push(`/profile/${userdata.username}`); 
+            router.push(`/client/profile/${userdata.username}`); 
         } catch (error: any) {
             console.error("Login error:", error);
             const errorMessage = error.response.data.message || "Login failed";
@@ -102,7 +102,7 @@ export default function LoginPage() {
       </p>
       <p className="mt-4 text-center text-sm">
         Don't have an account?{" "}
-        <Link href="/signup" className="text-blue-400 hover:underline">
+        <Link href="/client/signup" className="text-blue-400 hover:underline">
           Sign up
         </Link>
       </p>

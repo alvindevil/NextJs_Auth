@@ -43,7 +43,7 @@ export default function VerifyEmailPage() {
             {verified && (
                 <div>
                     <h2 className="text-2xl">Email Verified</h2>
-                    <Link href="/login">
+                    <Link href="/client/login" className="text-blue-500 hover:underline">
                         Login
                     </Link>
                 </div>

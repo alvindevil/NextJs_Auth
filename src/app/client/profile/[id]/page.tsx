@@ -2,16 +2,15 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React, { useState, use, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import toast from "react-hot-toast";
 import SidePanel from "@/components/layout/sidePanel";
 import Textarea from "@/components/ui/Textarea";
-import {Header} from "@/components/layout/Header";
-import {Avatar, AvatarFallback} from "@/components/ui/avatar"
-import Head from "next/head";
+import { Header } from "@/components/layout/Header";
+import { FiBookOpen } from "react-icons/fi";
 
-export default function UserProfile({ params }: { params: Promise<{ id: string }> }) {
-    const { id: urlUsername } = use(params);
+export default function UserProfile({ params }: { params: Promise <{ id: string }> }) {
+    const {id: urlUsername } = use(params)
     const router = useRouter();
 
     const [title, setTitle] = useState("");
@@ -21,16 +20,20 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
     const [showInvalid, setShowInvalid] = useState(false);
     const [blogs, setBlogs] = useState<any[]>([]);
     const [showBlogs, setShowBlogs] = useState(false);
-    const fetchBlogs = async () => {
+
+    const handleShowBlogs = async () => {
         try {
             const res = await axios.get("/api/users/blogs");
-            if (res.data.success) setBlogs(res.data.blogs);
-            else toast.error("Failed to fetch blogs");
+            if (res.data.success) {
+                setBlogs(res.data.blogs);
+                setShowBlogs(true); 
+            } else {
+                toast.error("Failed to fetch blogs");
+            }
         } catch (err) {
             toast.error("Failed to fetch blogs");
         }
     };
-
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -39,7 +42,7 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                 const loggedInUsername = res.data.data.username;
                 if (!loggedInUsername || loggedInUsername !== urlUsername) {
                     setShowInvalid(true);
-                }
+                } 
             } catch (error) {
                 console.error("Error checking username:", error);
             }
@@ -47,13 +50,19 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
         checkAuth();
     }, [urlUsername, router]);
 
-    useEffect(() => {{
+    useEffect(() => {
         if (showmessage) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 setShowMessage("");
             }, 2000);
+            return () => clearTimeout(timeout);
         }
-    }}, [showmessage]);
+    }, [showmessage]);
+
+    const handleOpenBlog = async (blog:any) => {
+        router.push(`/client/profile/${urlUsername}/${blog.title}`)
+        console.log("here's the blog data : ",blog);
+    };
 
     const handleSubmit = async () => {
         try {
@@ -65,16 +74,15 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
             const response = await axios.post("/api/users/blogs", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            if(response.data.success) {
+
+            if (response.data.success) {
                 setTitle("");
                 setText("");
                 setImage(null);
                 setShowMessage("Blog added successfully");
+                toast.success("Blog created successfully!");
             }
-            toast.success("Blog created successfully!");
-            console.log("Blog added successfully ");
-        } 
-        catch (err) {
+        } catch (err) {
             toast.error("Failed to save blog");
         }
     };
@@ -83,24 +91,31 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
         try {
             const response = await axios.get("/api/users/logout");
             toast.success(response.data.message || "Logout successful");
-            alert("Logout successful");
             router.push("/client/login");
         } catch (error: any) {
             toast.error(error?.response?.data?.message || "Logout failed");
         }
     };
 
+    const customItems = [
+        {
+            label: "Show Blogs",
+            icon: <FiBookOpen />,
+            onClick: handleShowBlogs, 
+            className: "text-blue-700 font-semibold",
+        },
+    ];
+
+
     return (
         <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
-            {/* Notification Banner */}
             {showmessage && (
                 <div className="fixed top-6 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg z-50 transition-all duration-300">
                     {showmessage}
                 </div>
             )}
 
-            {/* Header */}
-            <div className="flex justify-between items-center px-6  bg-white shadow-md sticky top-0 z-40">
+            <div className="flex justify-between items-center px-6 bg-white shadow-md sticky top-0 z-40">
                 <Header title="NotionBlog" navigation={[]} />
                 <button
                     className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg transition duration-200"
@@ -112,7 +127,6 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                 </button>
             </div>
 
-            {/* Invalid User Message */}
             {showInvalid ? (
                 <div className="m-auto bg-white p-8 rounded-xl shadow-md text-center max-w-md mt-16">
                     <h2 className="text-2xl font-bold text-red-600 mb-2">🚫 Invalid User</h2>
@@ -128,12 +142,16 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                 </div>
             ) : (
                 <div className="flex flex-col md:flex-row w-full">
-                    {/* Side Panel */}
                     <aside className="w-full md:w-64 bg-white border-r border-gray-200">
-                        <SidePanel onShowBlogs={() => { setShowBlogs(true); fetchBlogs(); }} />
+                        <SidePanel
+                            blogs={blogs}
+                            setShowBlogs={setShowBlogs}
+                            handleOpenBlog={handleOpenBlog}
+                            handleFetchBlogs={handleShowBlogs}
+                            customItems={customItems}
+                        />
                     </aside>
 
-                    {/* Main Content */}
                     <main className="flex-1 p-6">
                         {showBlogs ? (
                             <div>
@@ -154,11 +172,13 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                                             <li
                                                 key={blog._id}
                                                 className="p-4 bg-white rounded shadow cursor-pointer hover:bg-blue-50"
-                                                // onClick={() => handleOpenBlog(blog)}
+                                                onClick={() => handleOpenBlog(blog)}
                                             >
                                                 <h3 className="text-xl font-semibold">{blog.title}</h3>
                                                 <p className="text-gray-600">{blog.content.slice(0, 100)}...</p>
-                                                <span className="text-xs text-gray-400">{new Date(blog.createdAt).toLocaleString()}</span>
+                                                <span className="text-xs text-gray-400">
+                                                    {new Date(blog.createdAt).toLocaleString()}
+                                                </span>
                                             </li>
                                         ))}
                                     </ul>
@@ -166,7 +186,6 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                             </div>
                         ) : (
                             <>
-                                {/* Welcome Section */}
                                 <div className="mb-8">
                                     <h1 className="text-3xl font-semibold text-gray-800">
                                         👋 Welcome, <span className="text-blue-600">{urlUsername}</span>
@@ -176,7 +195,6 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                                     </p>
                                 </div>
 
-                                {/* Blog Title */}
                                 <div className="mb-6">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Title
@@ -190,7 +208,6 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                                     />
                                 </div>
 
-                                {/* Blog Content */}
                                 <div className="mb-6">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Content
@@ -204,7 +221,6 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                                     />
                                 </div>
 
-                                {/* Image Upload */}
                                 <div className="mb-6">
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Upload Image (optional)
@@ -217,7 +233,6 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                                     />
                                 </div>
 
-                                {/* Action Buttons */}
                                 <div className="flex flex-wrap items-center gap-4">
                                     <button
                                         onClick={handleSubmit}

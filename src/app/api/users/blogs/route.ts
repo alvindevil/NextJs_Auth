@@ -6,6 +6,39 @@ import Blogs from "@/models/blogModel";
 
 connect();
 
+export async function GET(req: NextRequest) {
+  try {
+    const decodedToken = await getDataFromToken(req);
+    const userName = decodedToken.username;
+    const userEmail = decodedToken.email;
+
+    const { searchParams } = new URL(req.url);
+    const blogTitle = searchParams.get("title");
+
+    let blogs;
+
+    if (blogTitle) {
+      // 🎯 Specific blog by title
+      console.log("Fetching blog with title:", blogTitle);
+      blogs = await Blogs.findOne({ userEmail, title: { $regex: new RegExp(blogTitle, "i") }  });
+      console.log("Fetched blog:", blogs);
+    } else {
+      // 🧾 All blogs for the user
+      blogs = await Blogs.find({ user: userName, userEmail });
+    }
+
+    return NextResponse.json({ success: true, blogs });
+  } catch (err) {
+    console.error("Error fetching blogs:", err);
+    return NextResponse.json(
+      { success: false, message: "Error fetching blogs" },
+      { status: 500 }
+    );
+  }
+}
+
+
+
 export async function POST(req: NextRequest) {
   try {
     const decodedToken = await getDataFromToken(req);

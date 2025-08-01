@@ -85,3 +85,50 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const decodedToken = await getDataFromToken(req);
+    const userEmail = decodedToken.email;
+
+    const url = new URL(req.url);
+    const blogId = url.pathname.split("/").pop();
+
+    const { type } = await req.json();
+
+    if (!blogId) {
+      return NextResponse.json(
+        { success: false, message: "Blog ID is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!type || !["public", "private"].includes(type)) {
+      return NextResponse.json(
+        { success: false, message: "Valid type (public/private) is required" },
+        { status: 400 }
+      );
+    }
+
+    const updatedBlog = await Blogs.findOneAndUpdate(
+      { _id: blogId, userEmail },
+      { type },
+      { new: true }
+    );
+
+    if (!updatedBlog) {
+      return NextResponse.json(
+        { success: false, message: "Blog not found or unauthorized" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, blog: updatedBlog });
+  } catch (err) {
+    console.error("Error updating blog:", err);
+    return NextResponse.json(
+      { success: false, message: "Error updating blog" },
+      { status: 500 }
+    );
+  }
+}

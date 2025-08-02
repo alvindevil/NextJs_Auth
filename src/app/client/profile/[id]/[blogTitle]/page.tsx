@@ -52,10 +52,12 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
     async function getBlogDetails() {
         try {
             setLoading(true);
-            const res = await axios.get(`/api/users/blogs/?title=${blogTitle}`);
-            if (res.data.success) {
+            // First try to fetch by title
+            let res = await axios.get(`/api/users/blogs/?title=${blogTitle}`);
+            if (res.data.success && res.data.blogs) {
                 setBlogData(res.data.blogs);
             } else {
+                // If not found by title, we might need to implement another approach
                 setError("Failed to load blog post");
             }
         } catch (error: any) {
@@ -71,10 +73,16 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
     }, []);
 
     const togglePublicStatus = async () => {
+        // Confirm before changing public status
+        const newType = blogData.type === "public" ? "private" : "public";
+        const confirm = window.confirm(`Are you sure you want to make this blog ${newType}?`);
+        
+        if (!confirm) return;
+
         try {
             // Update the blog's public status
-            const newType = blogData.type === "public" ? "private" : "public";
-            const res = await axios.patch(`/api/users/blogs/${blogData._id}`, {
+            const res = await axios.patch(`/api/users/blogs`, {
+                blogId: blogData._id,
                 type: newType
             });
             
@@ -86,11 +94,15 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
                 });
                 toast.success(`Blog is now ${newType}`);
             } else {
-                toast.error("Failed to update blog status");
+                toast.error(res.data.message || "Failed to update blog status");
             }
         } catch (error: any) {
             console.error("Error updating blog status:", error);
-            toast.error("Error updating blog status");
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Error updating blog status");
+            }
         }
     };
 
@@ -105,23 +117,53 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
 
     if (loading) {
         return (
-            <div className="flex flex-col min-h-screen bg-gray-50 font-sans">
+            <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-sans">
                 <div className="flex justify-between items-center px-6 py-3 bg-white shadow-md sticky top-0 z-40">
                     <div className="h-6 bg-gray-200 rounded w-32"></div>
                     <div className="h-8 bg-gray-200 rounded w-24"></div>
                 </div>
 
-                <main className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-xl mt-6 w-full">
-                    <div className="animate-pulse">
-                        <div className="h-10 bg-gray-200 rounded w-3/4 mb-4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
-                        <div className="space-y-4">
-                            <div className="h-4 bg-gray-200 rounded"></div>
-                            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                            <div className="h-4 bg-gray-200 rounded w-4/6"></div>
-                            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                            <div className="h-4 bg-gray-200 rounded"></div>
-                            <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+                <main className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl mt-6 mb-12 transition-all duration-300 hover:shadow-xl w-full">
+                    <div className="animate-pulse space-y-8">
+                        {/* Blog header skeleton */}
+                        <header className="border-b border-gray-200 pb-6">
+                            <div className="h-12 bg-gray-200 rounded w-3/4 mb-4"></div>
+                            <div className="flex flex-wrap items-center gap-6 text-sm">
+                                <div className="flex items-center gap-2 bg-gray-50 p-4 rounded-lg w-full">
+                                    <div className="h-4 bg-gray-200 rounded w-24"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-32"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-28"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-20"></div>
+                                </div>
+                            </div>
+                        </header>
+
+                        {/* Blog content skeleton */}
+                        <article className="prose max-w-none prose-lg bg-gray-50 p-6 rounded-lg">
+                            <div className="space-y-4">
+                                <div className="h-4 bg-gray-200 rounded"></div>
+                                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                                <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+                                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                                <div className="h-4 bg-gray-200 rounded"></div>
+                                <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+                                <div className="h-4 bg-gray-200 rounded w-3/6"></div>
+                                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                                <div className="h-4 bg-gray-200 rounded"></div>
+                                <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+                            </div>
+                        </article>
+
+                        {/* Blog actions skeleton */}
+                        <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-gray-200">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <div className="h-10 bg-gray-200 rounded w-24"></div>
+                                <div className="h-10 bg-gray-200 rounded w-24"></div>
+                            </div>
+                            <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
+                                <div className="h-4 bg-gray-200 rounded w-12"></div>
+                                <div className="h-7 bg-gray-200 rounded w-14"></div>
+                            </div>
                         </div>
                     </div>
                 </main>
@@ -131,7 +173,7 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
 
     if (error) {
         return (
-            <div className="flex flex-col min-h-screen bg-gray-50 font-sans">
+            <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-sans">
                 <div className="flex justify-between items-center px-6 py-3 bg-white shadow-md sticky top-0 z-40">
                     <Header title="NotionBlog" navigation={[]} />
                     <button
@@ -144,17 +186,25 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
                     </button>
                 </div>
 
-                <main className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-xl mt-6 w-full">
+                <main className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl mt-6 mb-12 transition-all duration-300 hover:shadow-xl w-full">
                     <div className="text-center py-12">
                         <div className="text-red-500 text-5xl mb-4">⚠️</div>
                         <h2 className="text-2xl font-bold text-gray-800 mb-2">Error Loading Blog</h2>
                         <p className="text-gray-600 mb-6">{error}</p>
-                        <button
-                            onClick={() => router.push("/client/profile")}
-                            className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
-                        >
-                            Back to Profile
-                        </button>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <button
+                                onClick={() => router.push("/client/profile")}
+                                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition w-full sm:w-auto"
+                            >
+                                Back to Profile
+                            </button>
+                            <button
+                                onClick={getBlogDetails}
+                                className="bg-gray-200 text-gray-800 px-5 py-2 rounded-lg hover:bg-gray-300 transition w-full sm:w-auto"
+                            >
+                                Try Again
+                            </button>
+                        </div>
                     </div>
                 </main>
             </div>
@@ -177,7 +227,7 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
             </div>
 
             {/* Main blog content */}
-            <main className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl mt-6 mb-12 transition-all duration-300 hover:shadow-xl">
+            <main className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl mt-6 mb-12 transition-all duration-300 hover:shadow-xl w-full">
                 {blogData ? (
                     <div className="space-y-8">
                         {/* Blog header */}
@@ -186,23 +236,23 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
                                 {blogData.title}
                             </h1>
                             
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                                <div className="flex items-center gap-1">
+                            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 bg-gray-50 p-4 rounded-lg">
+                                <div className="flex items-center gap-2">
                                     <FiUser className="text-gray-500" />
                                     <span className="font-medium text-gray-800">{blogData.user}</span>
                                 </div>
                                 
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-2">
                                     <FiCalendar className="text-gray-500" />
                                     <span>{formatRelativeDate(blogData.createdAt)}</span>
                                 </div>
                                 
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-2">
                                     <FiClock className="text-gray-500" />
                                     <span>{calculateReadingTime(blogData.content)}</span>
                                 </div>
                                 
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-2">
                                     {blogData.type === "public" ? (
                                         <FiGlobe className="text-green-500" />
                                     ) : (
@@ -216,11 +266,11 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
                         </header>
 
                         {/* Blog content */}
-                        <article className="prose max-w-none prose-lg text-gray-800 leading-relaxed">
+                        <article className="prose max-w-none prose-lg text-gray-800 leading-relaxed bg-gray-50 p-6 rounded-lg">
                             <div className="whitespace-pre-wrap break-words">
                                 {blogData.content.split('\n').map((paragraph: string, index: number) => (
                                     <p key={index} className="mb-4 last:mb-0">
-                                        {paragraph}
+                                        {paragraph || <>&nbsp;</>}
                                     </p>
                                 ))}
                             </div>
@@ -246,7 +296,7 @@ export default function BlogPage({ params }: { params: Promise<{ blogTitle: stri
                                 </button>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
                                 <span className="text-sm font-medium text-gray-700">Public</span>
                                 <button
                                     onClick={togglePublicStatus}

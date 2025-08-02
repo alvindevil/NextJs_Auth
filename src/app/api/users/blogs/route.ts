@@ -14,17 +14,23 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const blogTitle = searchParams.get("title");
+    const blogId = searchParams.get("id");
 
     let blogs;
 
-    if (blogTitle) {
+    if (blogId) {
+      // 🎯 Specific blog by ID
+      console.log("Fetching blog with ID:", blogId);
+      blogs = await Blogs.findOne({ _id: blogId, userEmail });
+      console.log("Fetched blog:", blogs);
+    } else if (blogTitle) {
       // 🎯 Specific blog by title
       console.log("Fetching blog with title:", blogTitle);
       blogs = await Blogs.findOne({ userEmail, title: { $regex: new RegExp(blogTitle, "i") }  });
       console.log("Fetched blog:", blogs);
     } else {
       // 🧾 All blogs for the user
-      blogs = await Blogs.find({ user: userName, userEmail });
+      blogs = await Blogs.find({ userEmail });
     }
 
     return NextResponse.json({ success: true, blogs });
@@ -86,15 +92,63 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PUT(req: NextRequest) {
+  try {
+    const decodedToken = await getDataFromToken(req);
+    const userEmail = decodedToken.email;
+
+    const formData = await req.formData();
+    const blogId = formData.get("blogId") as string;
+    const title = formData.get("title") as string;
+    const content = formData.get("content") as string;
+
+    console.log("PUT update request:", { blogId, title, content, userEmail });
+
+    if (!blogId) {
+      return NextResponse.json(
+        { success: false, message: "Blog ID is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!title || !content) {
+      return NextResponse.json(
+        { success: false, message: "Title and content are required" },
+        { status: 400 }
+      );
+    }
+
+    const updatedBlog = await Blogs.findOneAndUpdate(
+      { _id: blogId, userEmail },
+      { title, content },
+      { new: true }
+    );
+
+    if (!updatedBlog) {
+      return NextResponse.json(
+        { success: false, message: "Blog not found or unauthorized" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, blog: updatedBlog });
+  } catch (err: any) {
+    console.error("Error updating blog:", err.stack || err.message || err);
+    return NextResponse.json(
+      { success: false, message: `Error updating blog: ${err.message || err}` },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PATCH(req: NextRequest) {
   try {
     const decodedToken = await getDataFromToken(req);
     const userEmail = decodedToken.email;
 
-    const url = new URL(req.url);
-    const blogId = url.pathname.split("/").pop();
+    const { blogId, type } = await req.json();
 
-    const { type } = await req.json();
+    console.log("PATCH update request:", { blogId, type, userEmail });
 
     if (!blogId) {
       return NextResponse.json(
@@ -124,10 +178,10 @@ export async function PATCH(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, blog: updatedBlog });
-  } catch (err) {
-    console.error("Error updating blog:", err);
+  } catch (err: any) {
+    console.error("Error updating blog:", err.stack || err.message || err);
     return NextResponse.json(
-      { success: false, message: "Error updating blog" },
+      { success: false, message: `Error updating blog: ${err.message || err}` },
       { status: 500 }
     );
   }

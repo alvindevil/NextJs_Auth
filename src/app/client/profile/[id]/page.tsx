@@ -4,7 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, use } from "react";
 import toast from "react-hot-toast";
-import SidePanel from "@/components/layout/SidePanel";
+import SidePanel from "@/components/layout/sidePanel";
 import Textarea from "@/components/ui/Textarea";
 import { Header } from "@/components/layout/header";
 import { FiBookOpen } from "react-icons/fi";

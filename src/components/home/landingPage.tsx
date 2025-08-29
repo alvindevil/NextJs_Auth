@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import {Header} from '@/components/layout/header';
 import Hero from '@/components/home/hero';
 import  Loader  from "@/components/ui/Loader";
-import Footer from '../layout/Footer';
+import Footer from '../layout/footer';
 import About from './about';
 import Features from './feature';
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
+
 import { FeatureCard } from "@/components/ui/FeatureCard";
 
 interface HeroProps {

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import React, { useState, useEffect, use } from "react"
 import toast from "react-hot-toast"
 import Textarea from "@/components/ui/Textarea"
-import { Header } from "@/components/layout/Header"
+import { Header } from "@/components/layout/header"
 
 export default function EditBlog({ params }: { params: Promise<{ id: string }> }) {
     const { id: blogId } = use(params)

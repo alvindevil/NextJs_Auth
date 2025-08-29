@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Header } from "@/components/layout/Header";
+import { Header } from "@/components/layout/header";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
@@ -25,9 +25,11 @@ export default function ProfilePage() {
             console.log("Logout successful");
             toast.success('Logout successful')
             router.push('/client/login')
-        } catch (error:any) {
-            console.log(error.message);
-            toast.error(error.message)
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.log(error.message);
+                toast.error(error.message)
+            }
         }
     }
 
@@ -36,8 +38,11 @@ export default function ProfilePage() {
             const res = await axios.get('/api/users/me')
             console.log(res.data);
             setData(res.data.data)
-        } catch (error: any) {
+        } catch (error: unknown) {
+            if (error instanceof Error) {
             console.log(error.message);
+            };
+            console.log("Error fetching user details:", error);
             toast.error("Failed to fetch user details")
         }
     }

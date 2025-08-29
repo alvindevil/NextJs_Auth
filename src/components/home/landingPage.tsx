@@ -2,13 +2,12 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import {Header} from '@/components/layout/Header';
+import {Header} from '@/components/layout/header';
 import Hero from '@/components/home/hero';
 import  Loader  from "@/components/ui/Loader";
 import Footer from '../layout/Footer';
 import About from './about';
 import Features from './feature';
-import { set } from 'mongoose';
 
 export default function LandingPage() {
     const router = useRouter();

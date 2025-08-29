@@ -9,7 +9,7 @@ connect();
 export async function GET(req: NextRequest) {
   try {
     const decodedToken = await getDataFromToken(req);
-    const userName = decodedToken.username;
+    const _userName = decodedToken.username;   //for ignorance from eslint , we can use _ 
     const userEmail = decodedToken.email;
 
     const { searchParams } = new URL(req.url);
@@ -43,11 +43,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const decodedToken = await getDataFromToken(req);
-    console.log("Decoded token:", decodedToken);
     const userName = decodedToken.username;
     const userEmail = decodedToken.email;
-    console.log("User Name from token:", userName);
-    console.log("User Email from token:", userEmail);
 
     
 
@@ -127,10 +124,17 @@ export async function PUT(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, blog: updatedBlog });
-  } catch (err: any) {
-    console.error("Error updating blog:", err.stack || err.message || err);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("Error updating blog:", err.message);
+      return NextResponse.json(
+        { success: false, message: `Error updating blog: ${err.message}` },
+        { status: 500 }
+      );
+    }
+    console.error("Unexpected error:", err);
     return NextResponse.json(
-      { success: false, message: `Error updating blog: ${err.message || err}` },
+      { success: false, message: "Unexpected error occurred" },
       { status: 500 }
     );
   }
@@ -173,10 +177,18 @@ export async function PATCH(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, blog: updatedBlog });
-  } catch (err: any) {
-    console.error("Error updating blog:", err.stack || err.message || err);
+  } 
+  catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("Error updating blog:", err.message);
+      return NextResponse.json(
+        { success: false, message: `Error updating blog: ${err.message}` },
+        { status: 500 }
+      );
+    }
+    console.error("Unexpected error:", err);
     return NextResponse.json(
-      { success: false, message: `Error updating blog: ${err.message || err}` },
+      { success: false, message: "Unexpected error occurred" },
       { status: 500 }
     );
   }

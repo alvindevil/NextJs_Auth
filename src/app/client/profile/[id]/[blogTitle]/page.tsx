@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { Header } from "@/components/layout/Header"
 import { FiShare2, FiClock, FiUser, FiCalendar, FiGlobe, FiLock, FiEdit } from "react-icons/fi"
 import toast from "react-hot-toast"
-import SidePanel from "@/components/layout/sidePanel"
+import SidePanel from "@/components/layout/SidePanel"
 
 export default function BlogPage({ params }: { params: Promise<{ blogTitle: string }> }) {
     const [blogData, setBlogData] = useState<any>(null);

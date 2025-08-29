@@ -8,7 +8,7 @@ import axios from "axios";
 import { set } from "mongoose";
 import toast from "react-hot-toast";
 import { log } from "console";
-import {Header} from "@/components/layout/Header";
+import {Header} from "@/components/layout/header";
 
 
 export default function SignupPage() {

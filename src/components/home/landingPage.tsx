@@ -4,8 +4,8 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import {Header} from '@/components/layout/header';
 import Hero from '@/components/home/hero';
-import  Loader  from "@/components/ui/Loader";
-import Footer from '@/components/layout/footer';
+import Loader  from "@/components/ui/Loader";
+import Footer from '@/components/layout/Footer';
 import About from './about';
 import Features from './feature';
 

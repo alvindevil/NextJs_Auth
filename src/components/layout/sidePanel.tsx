@@ -63,15 +63,7 @@ export default function SidePanel({
         </li>
 
 
-        {/* 📚 History */}
-        <li
-          className="text-gray-700 hover:text-blue-600 cursor-pointer"
-          onClick={() => {
-            if (blogs.length > 0) handleOpenBlog(blogs[0]);
-          }}
-        >
-          📚 History
-        </li>
+        
 
         <li
   className="text-white bg-blue-600 hover:bg-blue-700 hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer font-semibold mt-4 rounded-md px-5 py-2 flex items-center justify-between w-fit gap-2"

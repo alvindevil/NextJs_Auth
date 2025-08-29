@@ -52,17 +52,7 @@ export default function SignupPage() {
         }
     }, [user.username, user.email, user.password]);
 
-    // Function to test GET request to backend
-    const testBackend = async () => {
-        try {
-            const res = await axios.get('/api/users/signup');
-            toast.success(res.data.message || 'Backend is working!');
-            console.log(res.data);
-        } catch (err: any) {
-            toast.error('Backend test failed');
-            console.error(err);
-        }
-    };
+    
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-950 text-white flex flex-col">

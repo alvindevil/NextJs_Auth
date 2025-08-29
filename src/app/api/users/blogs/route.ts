@@ -19,17 +19,12 @@ export async function GET(req: NextRequest) {
     let blogs;
 
     if (blogId) {
-      // 🎯 Specific blog by ID
-      console.log("Fetching blog with ID:", blogId);
       blogs = await Blogs.findOne({ _id: blogId, userEmail });
-      console.log("Fetched blog:", blogs);
-    } else if (blogTitle) {
-      // 🎯 Specific blog by title
-      console.log("Fetching blog with title:", blogTitle);
+    } 
+    else if (blogTitle) {
       blogs = await Blogs.findOne({ userEmail, title: { $regex: new RegExp(blogTitle, "i") }  });
-      console.log("Fetched blog:", blogs);
-    } else {
-      // 🧾 All blogs for the user
+    } 
+    else {
       blogs = await Blogs.find({ userEmail });
     }
 

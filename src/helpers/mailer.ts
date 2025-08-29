@@ -26,13 +26,23 @@ export const sendEmail = async({email, emailType, userId} :any) =>{
         }
 
         //create a transporter
+        // const transporter = nodemailer.createTransport({
+        //         host: "sandbox.smtp.mailtrap.io",
+        //         port: 2525,
+        //         auth: {
+        //             user: "1e851521d0c3cd",
+        //             pass: "38d213a45a590e"
+        //         }
+        // });
+
         const transporter = nodemailer.createTransport({
-                host: "sandbox.smtp.mailtrap.io",
-                port: 2525,
-                auth: {
-                    user: "1e851521d0c3cd",
-                    pass: "38d213a45a590e"
-                }
+            host: process.env.SMTP_HOST ,
+            port: Number(process.env.SMTP_PORT),
+            secure: true, 
+            auth: {
+                user: process.env.EMAIL_USER, // your Gmail
+                pass: process.env.EMAIL_PASS, // your App Password
+            },
         });
 
         // const route = emailType === "VERIFY" ? "verifyemail" : "resetpassword";
@@ -41,7 +51,7 @@ export const sendEmail = async({email, emailType, userId} :any) =>{
         else if(emailType === "RESET") { route = "client/resetPassword"; }
 
         const mailOptions = {
-            from: 'yadavs47334@gmail.com',
+            from: 'notionblog36@gmail.com',
             to: email,
             subject: emailType === "VERIFY" ? "Verify your account" : "Reset your password",
             html: `<p>Click <a href="${process.env.DOMAIN}/${route}?token=${hashedToken}">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"}

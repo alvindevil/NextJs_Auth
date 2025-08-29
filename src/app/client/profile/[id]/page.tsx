@@ -6,6 +6,7 @@ import React, { useState, useEffect, use } from "react";
 import toast from "react-hot-toast";
 import SidePanel from "@/components/layout/sidePanel";
 import Textarea from "@/components/ui/Textarea";
+import Editor from "@/components/ui/editor";
 import { Header } from "@/components/layout/Header";
 import { FiBookOpen } from "react-icons/fi";
 
